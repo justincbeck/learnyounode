@@ -1,6 +1,5 @@
 module.exports = function (dirName, ext, callback){
 	var fs = require('fs');
-	var filtered = [];
 
 	fs.readdir(dirName, function list(err, fileList){
 		if (err)
@@ -8,16 +7,10 @@ module.exports = function (dirName, ext, callback){
 			return callback(err);
 		}
 
-		for (var i in fileList)
-		{
-			var fileName = fileList[i];
-			
-			if (fileName.split('.')[1] == ext)
-			{
-				filtered.push(fileName);
-			}
-		}
+		fileList = fileList.filter(function(fileName){
+			return fileName.split('.')[1] == ext;
+		});
 
-		return callback(null, filtered);
+		return callback(null, fileList);
 	});
 }

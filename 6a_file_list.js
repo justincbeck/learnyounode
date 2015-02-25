@@ -14,7 +14,7 @@ var listFunction = function list(err, fileList){
 	}
 	else
 	{
-		console.log("Filter failed: " + err);
+		console.error("Filter failed: " + err);
 	}
 }
 
