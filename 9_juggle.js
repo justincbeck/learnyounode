@@ -15,9 +15,9 @@ var callback = function(response) {
 	response.on('end', function() {
 		dataHash[requestURL] = dataString;
 
-		for (var index in urlsArray)
+		for (var i = 0; i < urlsArray.length; i++)
 		{
-			var arrayURL = urlsArray[index];
+			var arrayURL = urlsArray[i];
 
 			if (dataHash[arrayURL] === null)
 			{
