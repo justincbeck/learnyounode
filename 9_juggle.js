@@ -1,43 +1,42 @@
 var http = require('http');
-var urlsArray = [];
-var dataHash = {};
 
-var that = this;
+// get all the urls passed in
+var urlsArray = process.argv.slice(2);
 
-var callback = function(response) {
-	var requestURL = url;
-	var dataString = '';
+// use an array to store the results by index
+var responses = [];
 
-	response.on('data', function(data) {
-		dataString = dataString + data;
-	});
+// add counter to keep track of completed requests
+var done = 0;
 
-	response.on('end', function() {
-		dataHash[requestURL] = dataString;
+var printResults = function () {
+	for (var i = 0; i < responses.length; i++) console.log(responses[i]);
+};
 
-		for (var index in urlsArray)
-		{
-			var arrayURL = urlsArray[index];
+var httpGet = function(index) {
+	var url = urlsArray[index];
 
-			if (dataHash[arrayURL] === null)
-			{
-				break;
+	http.get(url, function (response) {
+		var dataString = '';
+
+		response.on('data', function(data) {
+			dataString += data;
+		});
+
+		response.on('end', function() {
+			responses[index] = dataString;
+			done++;	
+			if (done === 3) {
+				printResults();
 			}
+		});
 
-			console.log(dataHash[arrayURL]);
-			urlsArray.shift();
-		}
-	});
-
-	response.on('error', function(err) {
-		return console.error(err);
+	}).on('error', function (err) {
+		// error is on the request not the response
+		console.error(err);
 	});
 }
 
-for (var i = 2; i < process.argv.length; i++)
-{
-	var url = process.argv[i];
-	urlsArray.push(url);
-
-	http.get(url, callback);
+for (var i = 0; i < urlsArray.length; i++) {
+	httpGet(i);
 }
