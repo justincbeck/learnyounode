@@ -1,8 +1,11 @@
 var http = require('http');
-var urls = [];
-var responses = new Object();
+var urlsArray = [];
+var dataHash = {};
+
+var that = this;
 
 var callback = function(response) {
+	var requestURL = url;
 	var dataString = '';
 
 	response.on('data', function(data) {
@@ -10,21 +13,19 @@ var callback = function(response) {
 	});
 
 	response.on('end', function() {
-		var url = 'fuck if i know';
-	
-		responses[url] = dataString;
+		dataHash[requestURL] = dataString;
 
-		for (var index in urls)
+		for (var index in urlsArray)
 		{
-			var url = urls[index];
+			var arrayURL = urlsArray[index];
 
-			if (responses[url] == null || responses[url] == '')
+			if (dataHash[arrayURL] === null)
 			{
 				break;
 			}
 
-			console.log(responses[url]);
-			urls.shift();
+			console.log(dataHash[arrayURL]);
+			urlsArray.shift();
 		}
 	});
 
@@ -36,6 +37,7 @@ var callback = function(response) {
 for (var i = 2; i < process.argv.length; i++)
 {
 	var url = process.argv[i];
-	urls.push(url);
+	urlsArray.push(url);
+
 	http.get(url, callback);
 }
