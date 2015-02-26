@@ -4,40 +4,45 @@ var dataHash = {};
 
 var that = this;
 
-var callback = function(response) {
-	var requestURL = url;
-	var dataString = '';
+var execute = function(requestURL) {
+	http.get(url, function(response) {
+		var dataString = '';
 
-	response.on('data', function(data) {
-		dataString = dataString + data;
-	});
+		response.on('data', function(data) {
+			dataString = dataString + data;
+		});
 
-	response.on('end', function() {
-		dataHash[requestURL] = dataString;
+		response.on('end', function() {
+			dataHash[requestURL] = dataString;
 
-		for (var i = 0; i < urlsArray.length; i++)
-		{
-			var arrayURL = urlsArray[i];
-
-			if (dataHash[arrayURL] === null)
+			for (var i = urlsArray.length - 1; i >= 0; i--)
 			{
-				break;
+				var arrayURL = urlsArray[i];
+				var hashData = dataHash[arrayURL];
+
+				if (hashData === undefined)
+				{
+					break;
+				}
+
+				console.log(dataHash[arrayURL]);
+				urlsArray.splice(i, 1);
 			}
+		});
 
-			console.log(dataHash[arrayURL]);
-			urlsArray.shift();
-		}
-	});
-
-	response.on('error', function(err) {
-		return console.error(err);
+		response.on('error', function(err) {
+			return console.error(err);
+		});
 	});
 }
 
-for (var i = 2; i < process.argv.length; i++)
+var callback = function(response) {
+}
+
+for (var i = process.argv.length - 1; i >= 2; i--)
 {
 	var url = process.argv[i];
 	urlsArray.push(url);
 
-	http.get(url, callback);
+	execute(url);
 }
