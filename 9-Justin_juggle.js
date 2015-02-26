@@ -5,7 +5,7 @@ var dataHash = {};
 var that = this;
 
 var execute = function(requestURL) {
-	http.get(url, function(response) {
+	http.get(requestURL, function(response) {
 		var dataString = '';
 
 		response.on('data', function(data) {
