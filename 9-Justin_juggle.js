@@ -2,8 +2,6 @@ var http = require('http');
 var urlsArray = [];
 var dataHash = {};
 
-var that = this;
-
 var execute = function(requestURL) {
 	http.get(requestURL, function(response) {
 		var dataString = '';
